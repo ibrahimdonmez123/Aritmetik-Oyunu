@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Aritmetik Oyunu</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+		input[type="number"] {
+			width: 100%;
+			padding: 10px;
+			margin-bottom: 10px;
+			box-sizing: border-box;
+			font-size: 20px;
+			border: 2px solid #ccc;
+			border-radius: 4px;
+			outline: none;
+		}
+		button {
+			background-color: #4CAF50;
+			color: white;
+			padding: 10px 20px;
+			border: none;
+			border-radius: 4px;
+			cursor: pointer;
+			float: right;
+			font-size: 20px;
+		}
+	</style>
+</head>
+<body>
+	<h1>Aritmetik Oyunu</h1>
+	<p>10 saniye içinde mümkün olan en fazla doğru cevabı verin!</p>
+	<p>Skor: <span id="skor">0</span> | Zaman: <span id="zaman">10</span></p>
+	<p id="soru">Soru burada görünecek.</p>
+	<input type="number" id="cevap" placeholder="Cevabı buraya yazın..." disabled>
+	<button id="basla">Başla</button>
+
+	<script>
+		// Kodlar buraya gelecek
+        // Oyun değişkenleri
+var skor = 0;
+var zaman = 10;
+var isOyunBitti = true;
+
+// HTML elementleri
+var skorElementi = document.getElementById("skor");
+var zamanElementi = document.getElementById("zaman");
+var soruElementi = document.getElementById("soru");
+var cevapElementi = document.getElementById("cevap");
+var baslaButonu = document.getElementById("basla");
+
+// Soru oluşturma fonksiyonu
+function soruOlustur() {
+  var sayi1 = Math.floor(Math.random() * 10) + 1;
+  var sayi2 = Math.floor(Math.random() * 10) + 1;
+  var operator = Math.floor(Math.random() * 2) == 0 ? "+" : "-";
+  var soruMetni = sayi1 + " " + operator + " " + sayi2;
+  var dogruCevap = operator == "+" ? sayi1 + sayi2 : sayi1 - sayi2;
+  return { soruMetni: soruMetni, dogruCevap: dogruCevap };
+}
+
+// Oyun bittiğinde çalışacak fonksiyon
+function oyunBitti() {
+  isOyunBitti = true;
+  baslaButonu.disabled = false;
+  cevapElementi.disabled = true;
+  alert("Oyun bitti! Skorunuz: " + skor);
+}
+
+// Oyunu başlatan fonksiyon
+// Oyunu başlatan fonksiyon
+function oyunBaslat() {
+  skor = 0;
+  zaman = 10;
+  isOyunBitti = false;
+  baslaButonu.disabled = true;
+  cevapElementi.disabled = false;
+
+  // Zamanlayıcı fonksiyonu
+  var zamanlayici = setInterval(function() {
+    zaman--;
+    zamanElementi.innerHTML = zaman;
+    if (zaman == 0) {
+      clearInterval(zamanlayici);
+      oyunBitti();
+    }
+  }, 1000);
+
+  // İlk soruyu oluştur
+  var soru = soruOlustur();
+  soruElementi.innerHTML = soru.soruMetni;
+  cevapElementi.value = "";
+  cevapElementi.focus();
+
+  // Cevap kontrolü
+  cevapElementi.onkeydown = function(event) {
+    if (event.keyCode == 13) { // Enter tuşuna basıldığında
+      var cevap = parseInt(cevapElementi.value);
+      if (cevap == soru.dogruCevap) {
+        skor++;
+        skorElementi.innerHTML = skor;
+      }
+      soru = soruOlustur();
+      soruElementi.innerHTML = soru.soruMetni;
+      cevapElementi.value = "";
+      cevapElementi.focus();
+    }
+  };
+}
+
+// Başla butonuna tıklandığında oyunu başlat
+baslaButonu.onclick = function() {
+  oyunBaslat();
+};
+</script>
